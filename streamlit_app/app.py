@@ -15,7 +15,7 @@ from backend.logger import save_to_sqlite
 # 📊 KPI + Plot modules
 from analytics.kpi_generator import generate_kpis
 from analytics.plot_generator import (
-    plot_vehicle_class_distribution,
+    # plot_vehicle_class_distribution,  # Commented out to avoid errors
     plot_passage_time_trend,
     plot_match_ratio_pie
 )
@@ -82,14 +82,21 @@ if uploaded_passage and uploaded_transaction:
     # 📉 Visuals
     st.subheader("📊 Visual Analytics")
 
-   # plot_vehicle_class_distribution(df_passage)
+    # plot_vehicle_class_distribution(df_passage)  # Commented out due to missing column issue
     plot_passage_time_trend(df_passage)
     plot_match_ratio_pie(kpis["Matched Passages"], kpis["Unmatched Passages"])
 
-    # 🖼 Show saved plot images (optional fallback)
-    st.image("docs/vehicle_class_distribution.png", caption="Vehicle Class Distribution")
-    st.image("docs/passage_hourly_trend.png", caption="Hourly Passage Trend")
-    st.image("docs/match_ratio_pie.png", caption="Match vs Unmatched Ratio")
+    # 🖼 Show saved plot images only if they exist
+    import os
+
+    if os.path.exists("docs/vehicle_class_distribution.png"):
+        st.image("docs/vehicle_class_distribution.png", caption="Vehicle Class Distribution")
+
+    if os.path.exists("docs/passage_hourly_trend.png"):
+        st.image("docs/passage_hourly_trend.png", caption="Hourly Passage Trend")
+
+    if os.path.exists("docs/match_ratio_pie.png"):
+        st.image("docs/match_ratio_pie.png", caption="Match vs Unmatched Ratio")
 
 
 
