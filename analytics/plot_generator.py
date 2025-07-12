@@ -1,15 +1,19 @@
+import os
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
-import os
-
-# Ensure the docs folder exists before saving plots
-os.makedirs("docs", exist_ok=True)
 
 def plot_vehicle_class_distribution(df_passage):
+    os.makedirs("docs", exist_ok=True)  # Ensure output folder exists
+
+    # Check for vehicle class column (case-insensitive and common variants)
+    possible_cols = ['vehicle_class', 'Vehicle Class', 'vehicle class']
+    col = next((c for c in possible_cols if c in df_passage.columns), None)
+    if col is None:
+        raise ValueError(f"Vehicle Class column not found. Columns available: {df_passage.columns.tolist()}")
+
     plt.figure(figsize=(10, 5))
-    # Use the correct column name, e.g., 'Vehicle Class'
-    sns.countplot(x='Vehicle Class', data=df_passage)
+    sns.countplot(x=col, data=df_passage)
     plt.title('Vehicle Class Distribution')
     plt.xticks(rotation=45)
     plt.tight_layout()
@@ -17,40 +21,46 @@ def plot_vehicle_class_distribution(df_passage):
     plt.close()
 
 def plot_passage_time_trend(df_passage):
-    timestamp_col = None
-    for col in df_passage.columns:
-        if "time" in col.lower():
-            timestamp_col = col
-            break
+    os.makedirs("docs", exist_ok=True)
 
-    if not timestamp_col:
-        print("No timestamp column found.")
-        return
+    # Check timestamp column name
+    possible_ts_cols = ['timestamp', 'Timestamp', 'Time Stamp', 'time_stamp']
+    ts_col = next((c for c in possible_ts_cols if c in df_passage.columns), None)
+    if ts_col is None:
+        raise ValueError(f"Timestamp column not found. Columns available: {df_passage.columns.tolist()}")
 
-    df_passage[timestamp_col] = pd.to_datetime(df_passage[timestamp_col], errors='coerce')
-    df_passage['hour'] = df_passage[timestamp_col].dt.hour
+    # Convert to datetime if not already
+    if not pd.api.types.is_datetime64_any_dtype(df_passage[ts_col]):
+        df_passage[ts_col] = pd.to_datetime(df_passage[ts_col], errors='coerce')
+
+    df_passage['hour'] = df_passage[ts_col].dt.hour
+
     hourly = df_passage.groupby('hour').size()
 
     plt.figure(figsize=(10, 5))
     sns.lineplot(x=hourly.index, y=hourly.values)
     plt.title('Vehicle Passage Trend by Hour')
-    plt.xlabel('Hour')
+    plt.xlabel('Hour of Day')
     plt.ylabel('Vehicle Count')
     plt.grid(True)
+    plt.tight_layout()
     plt.savefig("docs/passage_hourly_trend.png")
     plt.close()
 
-
 def plot_match_ratio_pie(matched_count, unmatched_count):
+    os.makedirs("docs", exist_ok=True)
+
     plt.figure(figsize=(6, 6))
     plt.pie(
         [matched_count, unmatched_count],
         labels=["Matched", "Unmatched"],
         autopct="%1.1f%%",
-        colors=["#4CAF50", "#F44336"]
+        colors=["#4CAF50", "#F44336"],
+        startangle=90
     )
     plt.title("Passage Match vs Unmatched")
     plt.tight_layout()
     plt.savefig("docs/match_ratio_pie.png")
     plt.close()
+
 
