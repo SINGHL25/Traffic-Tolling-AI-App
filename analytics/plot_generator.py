@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 def plot_vehicle_class_distribution(df_passage):
-    os.makedirs("docs", exist_ok=True)  # Ensure output folder exists
-
-    # Check for vehicle class column (case-insensitive and common variants)
+    import os
+    os.makedirs("docs", exist_ok=True)
+    
     possible_cols = ['vehicle_class', 'Vehicle Class', 'vehicle class']
     col = next((c for c in possible_cols if c in df_passage.columns), None)
     if col is None:
-        raise ValueError(f"Vehicle Class column not found. Columns available: {df_passage.columns.tolist()}")
+        raise ValueError(f"Vehicle class column not found. Available columns: {df_passage.columns.tolist()}")
 
     plt.figure(figsize=(10, 5))
     sns.countplot(x=col, data=df_passage)
@@ -19,6 +19,7 @@ def plot_vehicle_class_distribution(df_passage):
     plt.tight_layout()
     plt.savefig("docs/vehicle_class_distribution.png")
     plt.close()
+
 
 def plot_passage_time_trend(df_passage):
     os.makedirs("docs", exist_ok=True)
