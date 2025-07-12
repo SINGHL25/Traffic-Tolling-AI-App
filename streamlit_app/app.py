@@ -82,7 +82,7 @@ if uploaded_passage and uploaded_transaction:
     # 📉 Visuals
     st.subheader("📊 Visual Analytics")
 
-    plot_vehicle_class_distribution(df_passage)
+   # plot_vehicle_class_distribution(df_passage)
     plot_passage_time_trend(df_passage)
     plot_match_ratio_pie(kpis["Matched Passages"], kpis["Unmatched Passages"])
 
