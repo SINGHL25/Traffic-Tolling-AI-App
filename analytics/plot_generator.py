@@ -17,22 +17,29 @@ def plot_vehicle_class_distribution(df_passage):
     plt.close()
 
 def plot_passage_time_trend(df_passage):
-    # Convert 'Time Stamp' to datetime if not already
-    if not pd.api.types.is_datetime64_any_dtype(df_passage['Time Stamp']):
-        df_passage['Time Stamp'] = pd.to_datetime(df_passage['Time Stamp'], errors='coerce')
+    timestamp_col = None
+    for col in df_passage.columns:
+        if "time" in col.lower():
+            timestamp_col = col
+            break
 
-    df_passage['hour'] = df_passage['Time Stamp'].dt.hour
+    if not timestamp_col:
+        print("No timestamp column found.")
+        return
+
+    df_passage[timestamp_col] = pd.to_datetime(df_passage[timestamp_col], errors='coerce')
+    df_passage['hour'] = df_passage[timestamp_col].dt.hour
     hourly = df_passage.groupby('hour').size()
 
     plt.figure(figsize=(10, 5))
     sns.lineplot(x=hourly.index, y=hourly.values)
     plt.title('Vehicle Passage Trend by Hour')
-    plt.xlabel('Hour of Day')
+    plt.xlabel('Hour')
     plt.ylabel('Vehicle Count')
     plt.grid(True)
-    plt.tight_layout()
     plt.savefig("docs/passage_hourly_trend.png")
     plt.close()
+
 
 def plot_match_ratio_pie(matched_count, unmatched_count):
     plt.figure(figsize=(6, 6))
