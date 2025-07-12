@@ -1,13 +1,12 @@
-# -------------------- streamlit_app/app.py --------------------
-
+# ------------------ app.py (updated) ------------------
 import sys
 import os
-
-# ✅ Add parent directory to system path so 'backend' is importable
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import streamlit as st
 import pandas as pd
+import sqlite3
+
+# Add project root directory to Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from backend.data_loader import load_passage_data, load_transaction_data
 from backend.matcher import match_transactions
@@ -18,11 +17,9 @@ from backend.logger import save_to_sqlite
 st.set_page_config(page_title="Traffic Tolling AI Tool", layout="wide")
 st.title("🚦 Traffic Tolling Analytics & Deficiency Detection")
 
-# ✅ File upload UI
-uploaded_passage = st.file_uploader("Upload Passage CSV/XLSX", type=["csv", "xlsx"])
-uploaded_transaction = st.file_uploader("Upload Transaction CSV/XLSX", type=["csv", "xlsx"])
+uploaded_passage = st.file_uploader("📥 Upload Passage CSV", type=["csv", "xlsx"])
+uploaded_transaction = st.file_uploader("📥 Upload Transaction CSV", type=["csv", "xlsx"])
 
-# ✅ If both files uploaded
 if uploaded_passage and uploaded_transaction:
     df_passage = load_passage_data(uploaded_passage)
     df_transaction = load_transaction_data(uploaded_transaction)
@@ -46,10 +43,13 @@ if uploaded_passage and uploaded_transaction:
     st.subheader("⚠️ Detected Issues")
     st.write(issues)
 
-    # -------------------------------------
-# View Saved Logs from SQLite Database
-# -------------------------------------
+    if st.button("💾 Save to Database"):
+        save_to_sqlite(matched, unmatched, issues)
+        st.success("🗂 Results saved to SQLite database.")
 
+# -------------------------------------
+# 📊 View Saved Logs from SQLite Database
+# -------------------------------------
 st.sidebar.subheader("📊 View Saved Logs")
 
 if st.sidebar.button("Show Past Results"):
@@ -70,10 +70,6 @@ if st.sidebar.button("Show Past Results"):
 
         conn.close()
     except Exception as e:
-        st.error(f"Error loading data: {e}")
+        st.error(f"❌ Error loading data: {e}")
 
-
-    if st.button("💾 Save to Database"):
-        save_to_sqlite(matched, unmatched, issues)
-        st.success("✅ Results saved to SQLite database.")
 
