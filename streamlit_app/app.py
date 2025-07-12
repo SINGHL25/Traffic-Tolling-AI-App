@@ -1,4 +1,3 @@
-# -------------------- app.py --------------------
 import sys
 import os
 import streamlit as st
@@ -34,7 +33,16 @@ if uploaded_passage and uploaded_transaction:
     df_passage = load_passage_data(uploaded_passage)
     df_transaction = load_transaction_data(uploaded_transaction)
 
-    # 📄 Show raw data
+    # --- Fix: Rename datetime column to 'timestamp' ---
+    if 'Time Stamp' in df_passage.columns:
+        df_passage = df_passage.rename(columns={'Time Stamp': 'timestamp'})
+    elif 'TS' in df_passage.columns:
+        df_passage = df_passage.rename(columns={'TS': 'timestamp'})
+
+    # Convert 'timestamp' column to datetime (coerce errors)
+    df_passage['timestamp'] = pd.to_datetime(df_passage['timestamp'], errors='coerce')
+
+    # 📄 Show raw data previews
     st.subheader("📄 Preview: Passage Data")
     st.dataframe(df_passage.head())
 
@@ -82,6 +90,7 @@ if uploaded_passage and uploaded_transaction:
     st.image("docs/vehicle_class_distribution.png", caption="Vehicle Class Distribution")
     st.image("docs/passage_hourly_trend.png", caption="Hourly Passage Trend")
     st.image("docs/match_ratio_pie.png", caption="Match vs Unmatched Ratio")
+
 
 
 
