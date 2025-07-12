@@ -1,5 +1,3 @@
-# backend/data_loader.py
-
 import pandas as pd
 
 def load_passage_data(file):
@@ -8,12 +6,15 @@ def load_passage_data(file):
     else:
         df = pd.read_excel(file)
 
-    # Normalize column names
-    df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
+    # Rename 'Time Stamp' to 'timestamp' if it exists
+    for col in df.columns:
+        if col.strip().lower() == "time stamp":
+            df = df.rename(columns={col: "timestamp"})
+            break
 
-    # Parse timestamp
-    if 'time_stamp' in df.columns:
-        df['timestamp'] = pd.to_datetime(df['time_stamp'])
+    # Convert timestamp column to datetime
+    if "timestamp" in df.columns:
+        df["timestamp"] = pd.to_datetime(df["timestamp"])
 
     return df
 
@@ -24,11 +25,14 @@ def load_transaction_data(file):
     else:
         df = pd.read_excel(file)
 
-    # Normalize column names
-    df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
+    # Rename 'Time Stamp' to 'timestamp' if it exists
+    for col in df.columns:
+        if col.strip().lower() == "time stamp":
+            df = df.rename(columns={col: "timestamp"})
+            break
 
-    # Parse timestamp
-    if 'time_stamp' in df.columns:
-        df['timestamp'] = pd.to_datetime(df['time_stamp'])
+    # Convert timestamp column to datetime
+    if "timestamp" in df.columns:
+        df["timestamp"] = pd.to_datetime(df["timestamp"])
 
     return df
