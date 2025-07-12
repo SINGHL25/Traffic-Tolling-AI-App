@@ -6,13 +6,12 @@ def load_passage_data(file):
     else:
         df = pd.read_excel(file)
 
-    # Rename 'Time Stamp' to 'timestamp' if it exists
+    # Normalize and rename timestamp column
     for col in df.columns:
         if col.strip().lower() == "time stamp":
             df = df.rename(columns={col: "timestamp"})
             break
 
-    # Convert timestamp column to datetime
     if "timestamp" in df.columns:
         df["timestamp"] = pd.to_datetime(df["timestamp"])
 
@@ -25,13 +24,12 @@ def load_transaction_data(file):
     else:
         df = pd.read_excel(file)
 
-    # Rename 'Time Stamp' to 'timestamp' if it exists
+    # Normalize and rename timestamp column
     for col in df.columns:
         if col.strip().lower() == "time stamp":
             df = df.rename(columns={col: "timestamp"})
             break
 
-    # Convert timestamp column to datetime
     if "timestamp" in df.columns:
         df["timestamp"] = pd.to_datetime(df["timestamp"])
 
