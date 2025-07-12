@@ -5,6 +5,18 @@ from backend.data_loader import load_passage_data, load_transaction_data
 from backend.matcher import match_transactions
 from backend.analyser import analyse_passage_quality
 from backend.logger import save_to_sqlite
+import sys
+import os
+
+# Add parent directory to system path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Now these will work:
+from backend.data_loader import load_passage_data
+from backend.matcher import match_transactions
+from backend.analyser import analyse_passage_quality
+from backend.logger import save_to_sqlite
+
 
 st.set_page_config(page_title="Traffic Tolling AI Tool", layout="wide")
 st.title("🚦 Traffic Tolling Analytics & Deficiency Detection")
