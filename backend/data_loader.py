@@ -10,3 +10,4 @@ def load_transaction_data(file):
     if file.name.endswith('.xlsx'):
         return pd.read_excel(file)
     return pd.read_csv(file)
+
