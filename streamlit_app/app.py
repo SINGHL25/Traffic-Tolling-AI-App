@@ -46,6 +46,33 @@ if uploaded_passage and uploaded_transaction:
     st.subheader("⚠️ Detected Issues")
     st.write(issues)
 
+    # -------------------------------------
+# View Saved Logs from SQLite Database
+# -------------------------------------
+
+st.sidebar.subheader("📊 View Saved Logs")
+
+if st.sidebar.button("Show Past Results"):
+    try:
+        conn = sqlite3.connect("database/results.sqlite")
+
+        st.subheader("🟢 Matched Passages")
+        matched_df = pd.read_sql_query("SELECT * FROM matched_passages", conn)
+        st.dataframe(matched_df)
+
+        st.subheader("🔴 Unmatched Passages")
+        unmatched_df = pd.read_sql_query("SELECT * FROM unmatched_passages", conn)
+        st.dataframe(unmatched_df)
+
+        st.subheader("⚠️ Issue Summary")
+        issues_df = pd.read_sql_query("SELECT * FROM issue_summary", conn)
+        st.dataframe(issues_df)
+
+        conn.close()
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+
+
     if st.button("💾 Save to Database"):
         save_to_sqlite(matched, unmatched, issues)
         st.success("✅ Results saved to SQLite database.")
