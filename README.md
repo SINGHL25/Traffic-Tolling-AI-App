@@ -1,6 +1,7 @@
 # Traffic-Tolling-AI-App
 This app analyzes traffic passage and transaction data to detect inconsistencies like: - Vehicle passed without valid number plate - Missing tag/transaction linkage - Duplicate or unmatched vehicle records
-# -------------------- README.md --------------------
+<img width="1024" height="1024" alt="Gemini_Generated_Image_wie21ewie21ewie2" src="https://github.com/user-attachments/assets/5d1af74b-3b5f-46ad-83cc-6e98a81981c2" />
+
 # 📈 Traffic Toll AI Project
 
 This app analyzes traffic passage and transaction data to detect:
